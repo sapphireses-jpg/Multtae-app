@@ -1,0 +1,16 @@
+:root {
+  --mt-font-display: 'Jua', sans-serif;              /* 워드마크·물때 배지·큰 숫자 */
+  --mt-font-body: 'Noto Sans KR', system-ui, sans-serif;
+
+  /* 8px 기반 타입 스케일 */
+  --mt-headline-lg: 700 28px/34px var(--mt-font-body);
+  --mt-headline-md: 700 22px/28px var(--mt-font-body);
+  --mt-headline-sm: 700 18px/24px var(--mt-font-body);
+  --mt-body-lg: 400 16px/24px var(--mt-font-body);
+  --mt-body-md: 400 14px/20px var(--mt-font-body);
+  --mt-label-lg: 600 14px/20px var(--mt-font-body);
+  --mt-label-md: 500 12px/16px var(--mt-font-body);
+  --mt-button: 700 15px/20px var(--mt-font-body);
+  --mt-display-md: 400 34px/1.2 var(--mt-font-display);
+  --mt-display-sm: 400 19px/1.2 var(--mt-font-display);
+}

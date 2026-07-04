@@ -1,0 +1,55 @@
+:root {
+  /* ---- Brand ---- */
+  --mt-brand: #0077FF;              /* 액션·활성·현재 시점 */
+  --mt-brand-active: #005FCC;       /* pressed */
+  --mt-brand-disabled: rgba(0, 119, 255, 0.4);
+  --mt-brand-tint: #EBF3FF;         /* 브랜드 배경 틴트 */
+  --mt-brand-soft: #B8D9FF;         /* 로고 보조 물결 */
+
+  /* ---- Accent (코랄핑크 — 하이라이트·"지금"·물때 배지) ---- */
+  --mt-accent: #FF385C;             /* 포인트·현재 시점·강조 데이터 */
+  --mt-accent-active: #E00B41;
+  --mt-accent-tint: #FFF0F3;
+  --mt-accent-soft: #FFC9D4;        /* 로고 보조 물결(코랄) */
+  --mt-accent-border: rgba(255, 56, 92, 0.2);
+
+  /* ---- Ink (텍스트) ---- */
+  --mt-ink: #191C1E;                /* 제목·핵심 수치 */
+  --mt-body: #434656;               /* 본문 */
+  --mt-muted: #737688;              /* 보조·메타 */
+  --mt-disabled: #929292;
+
+  /* ---- Liquid 배경 ---- */
+  --mt-bg-start: #F0F4FD;
+  --mt-bg-end: #E1E8F5;
+  --mt-bg: linear-gradient(135deg, var(--mt-bg-start) 0%, var(--mt-bg-end) 100%);
+  --mt-blob-white: rgba(255, 255, 255, 0.9);
+  --mt-blob-pink: rgba(255, 218, 214, 0.5); /* 코랄핑크 블롭 — 블루와 섮어 쓴다 */
+  --mt-blob-blue: rgba(220, 225, 255, 0.6);
+
+  /* ---- Glass 표면 ---- */
+  --mt-glass: rgba(255, 255, 255, 0.4);          /* 카드 */
+  --mt-glass-soft: rgba(255, 255, 255, 0.5);     /* 인풋·서브 패널 */
+  --mt-glass-strong: rgba(255, 255, 255, 0.6);   /* 버튼·강조 표면 */
+  --mt-glass-header: rgba(247, 249, 252, 0.7);   /* 헤더/푸터 바 */
+  --mt-hairline: rgba(255, 255, 255, 0.6);
+  --mt-hairline-strong: rgba(255, 255, 255, 0.8);
+  --mt-hairline-soft: rgba(255, 255, 255, 0.3);
+
+  /* ---- Semantic ---- */
+  --mt-error: #BA1A1A;
+  --mt-error-bg: #FFDAD6;
+  --mt-info: #2E6FA3;               /* 조수 곡선·바다 데이터 라인 */
+  --mt-chart-line: #434656;         /* 그래프 기본 선 */
+  --mt-chart-grid: #C3C5D9;
+
+  /* ---- Semantic aliases ---- */
+  --mt-surface-card: var(--mt-glass);
+  --mt-surface-input: var(--mt-glass-soft);
+  --mt-surface-button: var(--mt-glass-strong);
+  --mt-text-title: var(--mt-ink);
+  --mt-text-body: var(--mt-body);
+  --mt-text-muted: var(--mt-muted);
+  --mt-action-primary: var(--mt-brand);
+  --mt-point: var(--mt-accent);
+}

@@ -1,0 +1,10 @@
+:root {
+  /* 4/8px 증분 시스템 */
+  --mt-margin-mobile: 20px;   /* 화면 좌우 고정 마진 */
+  --mt-gutter: 12px;
+  --mt-stack-sm: 8px;         /* 밀접 요소 */
+  --mt-stack-md: 16px;        /* 인풋 필드 사이 */
+  --mt-stack-lg: 24px;        /* 카드 사이 */
+  --mt-stack-xl: 40px;        /* 주요 섹션 사이 */
+  --mt-safe-bottom: 34px;     /* 홈 인디케이터 안전영역 */
+}

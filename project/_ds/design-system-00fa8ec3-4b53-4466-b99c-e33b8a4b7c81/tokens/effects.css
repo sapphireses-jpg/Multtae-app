@@ -1,0 +1,41 @@
+:root {
+  /* ---- Radii ---- */
+  --mt-radius-sm: 8px;
+  --mt-radius-md: 12px;
+  --mt-radius-lg: 16px;      /* 버튼·인풋 */
+  --mt-radius-xl: 24px;      /* 글래스 카드 */
+  --mt-radius-tile: 30px;    /* 스플래시 로고 타일 */
+  --mt-radius-pill: 9999px;
+
+  /* ---- Blur ---- */
+  --mt-blur-sm: blur(8px);   /* @kind other */
+  --mt-blur-md: blur(16px);  /* @kind other */
+  --mt-blur-lg: blur(20px);  /* @kind other */
+
+  /* ---- Shadows ---- */
+  --mt-shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+  --mt-shadow-soft: 0 4px 12px 0 rgba(0, 0, 0, 0.05);
+  --mt-shadow-brand: 0 8px 24px rgba(0, 119, 255, 0.3);
+  --mt-shadow-brand-soft: 0 4px 12px rgba(0, 119, 255, 0.25);
+  --mt-shadow-accent: 0 8px 24px rgba(255, 56, 92, 0.3);
+  --mt-shadow-accent-soft: 0 4px 12px rgba(255, 56, 92, 0.25);
+  --mt-shadow-inset-input: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+  --mt-focus-ring: 0 0 12px rgba(0, 119, 255, 0.3);
+
+  /* ---- Motion ---- */
+  --mt-ease: cubic-bezier(0.25, 0.6, 0.3, 1); /* @kind other */
+  --mt-dur-fast: 180ms; /* @kind other */
+  --mt-dur-base: 250ms; /* @kind other */
+}
+
+/* 리퀴드 블롭 모핑 — 배경 장식 전용 */
+@keyframes mt-morph {
+  0%   { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+  34%  { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; }
+  67%  { border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; }
+  100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+}
+
+/* 스플래시 페이드 (명세: 로고 0~350ms, 서비스명 220~650ms) */
+@keyframes mt-fade-logo { from { opacity: 0; transform: translateY(10px) scale(0.97); } to { opacity: 1; transform: none; } }
+@keyframes mt-fade-name { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }

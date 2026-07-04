@@ -1,0 +1,307 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "components/core/**",
+              "components/display/**",
+              "ios-frame.jsx"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Jua|Noto Sans KR))/i]",
+        "message": "Font not provided by the design system. Available: Jua, Noto Sans KR."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Badge'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|display|children|style|key|ref|className|style|children)$/]",
+        "message": "<Badge> doesn't accept that prop. Declared props: variant, display, children, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Badge'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:brand|neutral|error)$/]",
+        "message": "<Badge> variant must be one of 'brand' | 'neutral' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|disabled|onClick|children|style|key|ref|className|style|children)$/]",
+        "message": "<Button> doesn't accept that prop. Declared props: variant, disabled, onClick, children, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:primary|glass|tint)$/]",
+        "message": "<Button> variant must be one of 'primary' | 'glass' | 'tint'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Chip'] > JSXAttribute > JSXIdentifier[name!=/^(?:selected|onClick|children|style|key|ref|className|style|children)$/]",
+        "message": "<Chip> doesn't accept that prop. Declared props: selected, onClick, children, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='GlassCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:level|radius|style|children|key|ref|className|style|children)$/]",
+        "message": "<GlassCard> doesn't accept that prop. Declared props: level, radius, style, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='GlassCard'] > JSXAttribute[name.name='level'] > Literal[value!=/^(?:card|soft|strong)$/]",
+        "message": "<GlassCard> level must be one of 'card' | 'soft' | 'strong'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Input'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|error|style|inputStyle|key|ref|className|style|children)$/]",
+        "message": "<Input> doesn't accept that prop. Declared props: label, error, style, inputStyle."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ListRow'] > JSXAttribute > JSXIdentifier[name!=/^(?:direction|title|meta|badge|badgeVariant|emphasized|style|key|ref|className|style|children)$/]",
+        "message": "<ListRow> doesn't accept that prop. Declared props: direction, title, meta, badge, badgeVariant, emphasized, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ListRow'] > JSXAttribute[name.name='direction'] > Literal[value!=/^(?:high|low)$/]",
+        "message": "<ListRow> direction must be one of 'high' | 'low'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ListRow'] > JSXAttribute[name.name='badgeVariant'] > Literal[value!=/^(?:brand|neutral)$/]",
+        "message": "<ListRow> badgeVariant must be one of 'brand' | 'neutral'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SegmentTabs'] > JSXAttribute > JSXIdentifier[name!=/^(?:items|value|onChange|style|key|ref|className|style|children)$/]",
+        "message": "<SegmentTabs> doesn't accept that prop. Declared props: items, value, onChange, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TideChart'] > JSXAttribute > JSXIdentifier[name!=/^(?:width|height|now|style|key|ref|className|style|children)$/]",
+        "message": "<TideChart> doesn't accept that prop. Declared props: width, height, now, style."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Toggle'] > JSXAttribute > JSXIdentifier[name!=/^(?:checked|onChange|label|style|key|ref|className|style|children)$/]",
+        "message": "<Toggle> doesn't accept that prop. Declared props: checked, onChange, label, style."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {
+      "Badge": {
+        "replaces": []
+      },
+      "Button": {
+        "replaces": []
+      },
+      "Chip": {
+        "replaces": []
+      },
+      "GlassCard": {
+        "replaces": []
+      },
+      "Input": {
+        "replaces": []
+      },
+      "ListRow": {
+        "replaces": []
+      },
+      "SegmentTabs": {
+        "replaces": []
+      },
+      "TideChart": {
+        "replaces": []
+      },
+      "Toggle": {
+        "replaces": []
+      }
+    },
+    "tokens": [
+      "--mt-accent",
+      "--mt-accent-active",
+      "--mt-accent-border",
+      "--mt-accent-soft",
+      "--mt-accent-tint",
+      "--mt-action-primary",
+      "--mt-bg",
+      "--mt-bg-end",
+      "--mt-bg-start",
+      "--mt-blob-blue",
+      "--mt-blob-pink",
+      "--mt-blob-white",
+      "--mt-blur-lg",
+      "--mt-blur-md",
+      "--mt-blur-sm",
+      "--mt-body",
+      "--mt-body-lg",
+      "--mt-body-md",
+      "--mt-brand",
+      "--mt-brand-active",
+      "--mt-brand-disabled",
+      "--mt-brand-soft",
+      "--mt-brand-tint",
+      "--mt-button",
+      "--mt-chart-grid",
+      "--mt-chart-line",
+      "--mt-disabled",
+      "--mt-display-md",
+      "--mt-display-sm",
+      "--mt-dur-base",
+      "--mt-dur-fast",
+      "--mt-ease",
+      "--mt-error",
+      "--mt-error-bg",
+      "--mt-focus-ring",
+      "--mt-font-body",
+      "--mt-font-display",
+      "--mt-glass",
+      "--mt-glass-header",
+      "--mt-glass-soft",
+      "--mt-glass-strong",
+      "--mt-gutter",
+      "--mt-hairline",
+      "--mt-hairline-soft",
+      "--mt-hairline-strong",
+      "--mt-headline-lg",
+      "--mt-headline-md",
+      "--mt-headline-sm",
+      "--mt-info",
+      "--mt-ink",
+      "--mt-label-lg",
+      "--mt-label-md",
+      "--mt-margin-mobile",
+      "--mt-muted",
+      "--mt-point",
+      "--mt-radius-lg",
+      "--mt-radius-md",
+      "--mt-radius-pill",
+      "--mt-radius-sm",
+      "--mt-radius-tile",
+      "--mt-radius-xl",
+      "--mt-safe-bottom",
+      "--mt-shadow-accent",
+      "--mt-shadow-accent-soft",
+      "--mt-shadow-brand",
+      "--mt-shadow-brand-soft",
+      "--mt-shadow-glass",
+      "--mt-shadow-inset-input",
+      "--mt-shadow-soft",
+      "--mt-stack-lg",
+      "--mt-stack-md",
+      "--mt-stack-sm",
+      "--mt-stack-xl",
+      "--mt-surface-button",
+      "--mt-surface-card",
+      "--mt-surface-input",
+      "--mt-text-body",
+      "--mt-text-muted",
+      "--mt-text-title"
+    ],
+    "tokenKinds": {
+      "--mt-brand": "color",
+      "--mt-brand-active": "color",
+      "--mt-brand-disabled": "color",
+      "--mt-brand-tint": "color",
+      "--mt-brand-soft": "color",
+      "--mt-accent": "color",
+      "--mt-accent-active": "color",
+      "--mt-accent-tint": "color",
+      "--mt-accent-soft": "color",
+      "--mt-accent-border": "color",
+      "--mt-ink": "color",
+      "--mt-body": "color",
+      "--mt-muted": "color",
+      "--mt-disabled": "color",
+      "--mt-bg-start": "color",
+      "--mt-bg-end": "color",
+      "--mt-bg": "color",
+      "--mt-blob-white": "color",
+      "--mt-blob-pink": "color",
+      "--mt-blob-blue": "color",
+      "--mt-glass": "color",
+      "--mt-glass-soft": "color",
+      "--mt-glass-strong": "color",
+      "--mt-glass-header": "color",
+      "--mt-hairline": "color",
+      "--mt-hairline-strong": "color",
+      "--mt-hairline-soft": "color",
+      "--mt-error": "color",
+      "--mt-error-bg": "color",
+      "--mt-info": "color",
+      "--mt-chart-line": "color",
+      "--mt-chart-grid": "color",
+      "--mt-surface-card": "color",
+      "--mt-surface-input": "color",
+      "--mt-surface-button": "color",
+      "--mt-text-title": "font",
+      "--mt-text-body": "font",
+      "--mt-text-muted": "font",
+      "--mt-action-primary": "color",
+      "--mt-point": "color",
+      "--mt-font-display": "font",
+      "--mt-font-body": "font",
+      "--mt-headline-lg": "color",
+      "--mt-headline-md": "color",
+      "--mt-headline-sm": "color",
+      "--mt-body-lg": "color",
+      "--mt-body-md": "color",
+      "--mt-label-lg": "color",
+      "--mt-label-md": "color",
+      "--mt-button": "color",
+      "--mt-display-md": "color",
+      "--mt-display-sm": "color",
+      "--mt-margin-mobile": "spacing",
+      "--mt-gutter": "spacing",
+      "--mt-stack-sm": "spacing",
+      "--mt-stack-md": "spacing",
+      "--mt-stack-lg": "spacing",
+      "--mt-stack-xl": "spacing",
+      "--mt-safe-bottom": "spacing",
+      "--mt-radius-sm": "radius",
+      "--mt-radius-md": "radius",
+      "--mt-radius-lg": "radius",
+      "--mt-radius-xl": "radius",
+      "--mt-radius-tile": "radius",
+      "--mt-radius-pill": "radius",
+      "--mt-blur-sm": "other",
+      "--mt-blur-md": "other",
+      "--mt-blur-lg": "other",
+      "--mt-shadow-glass": "shadow",
+      "--mt-shadow-soft": "shadow",
+      "--mt-shadow-brand": "shadow",
+      "--mt-shadow-brand-soft": "shadow",
+      "--mt-shadow-accent": "shadow",
+      "--mt-shadow-accent-soft": "shadow",
+      "--mt-shadow-inset-input": "shadow",
+      "--mt-focus-ring": "shadow",
+      "--mt-ease": "other",
+      "--mt-dur-fast": "other",
+      "--mt-dur-base": "other"
+    },
+    "fontFamilies": [
+      "Jua",
+      "Noto Sans KR"
+    ]
+  }
+}
