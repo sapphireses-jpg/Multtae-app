@@ -1,19 +1,15 @@
 /**
  * Multtae app root. Renders the login flow inside a centered phone frame over
- * the liquid-glass background. Switches between the login screen and the
- * "둘러보기" tour, and listens for a Supabase session to advance past login.
+ * the liquid-glass background, and listens for a Supabase session to advance
+ * past login.
  *
- * 둘러보기 exposure policy (Login_BeforeMain spec): completion is stored on
- * the device; the tour auto-shows exactly once on first launch, and after
- * that it is reachable only via the secondary link on the login screen.
- * Completing OR skipping both count as "seen".
- *
- * 기기 권한 안내 (Permission_Request spec): shown once right after login,
- * before the post-login flow. Pre-notice only — no OS prompts fire here.
- * "확인" marks it seen on the device and it never auto-shows again; denied /
- * blocked permissions are re-explained by each feature screen instead.
- * (Per-account "new member" branching is a later work package; until then the
- * device flag stands in for "first login".)
+ * First-run sequence: 둘러보기 → 기기 권한 안내 (Permission_Request) → 로그인.
+ * Each step's completion is stored on the device, so both auto-show exactly
+ * once; a re-launch mid-sequence resumes at the first unseen step. After
+ * first run, the tour is reachable only via the secondary link on the login
+ * screen (closing it then returns straight to login), and the permission
+ * notice never auto-reshows — per-feature re-prompts happen at use time.
+ * Completing OR skipping the tour both count as "seen".
  */
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -26,32 +22,31 @@ import { appFonts } from './src/theme/fonts';
 import { colors, layout } from './src/theme/tokens';
 import { LiquidBackground } from './src/components/LiquidBackground';
 import { LoginScreen } from './src/screens/LoginScreen';
+import { PermissionScreen } from './src/screens/PermissionScreen';
 import { TourCarousel } from './src/components/TourCarousel';
-import { PermissionGuideScreen } from './src/screens/PermissionGuideScreen';
 import { PostLoginPlaceholder } from './src/screens/PostLoginPlaceholder';
 import { supabase } from './src/lib/supabase';
 
-type Screen = 'login' | 'tour';
+type Screen = 'login' | 'tour' | 'permission';
 
 const TOUR_SEEN_KEY = '@multtae/tour_seen';
-const PERMISSION_GUIDE_SEEN_KEY = '@multtae/permission_guide_seen';
+const PERMISSION_SEEN_KEY = '@multtae/permission_seen';
 
 export default function App() {
   const [fontsLoaded] = useFonts(appFonts);
-  // null until the device flag is read — we hold rendering to avoid flashing
-  // the login screen before deciding whether the tour auto-shows.
+  // null until the device flags are read — we hold rendering to avoid flashing
+  // the login screen before deciding which first-run step auto-shows.
   const [view, setView] = useState<Screen | null>(null);
+  const [permissionSeen, setPermissionSeen] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
-  // null until the device flag is read (same pattern as the tour flag).
-  const [permissionGuideSeen, setPermissionGuideSeen] = useState<boolean | null>(null);
 
   useEffect(() => {
-    AsyncStorage.getItem(TOUR_SEEN_KEY)
-      .then((seen) => setView(seen === '1' ? 'login' : 'tour'))
+    AsyncStorage.multiGet([TOUR_SEEN_KEY, PERMISSION_SEEN_KEY])
+      .then(([[, tourSeen], [, permSeen]]) => {
+        setPermissionSeen(permSeen === '1');
+        setView(tourSeen !== '1' ? 'tour' : permSeen !== '1' ? 'permission' : 'login');
+      })
       .catch(() => setView('login'));
-    AsyncStorage.getItem(PERMISSION_GUIDE_SEEN_KEY)
-      .then((seen) => setPermissionGuideSeen(seen === '1'))
-      .catch(() => setPermissionGuideSeen(true));
   }, []);
 
   useEffect(() => {
@@ -61,13 +56,14 @@ export default function App() {
   }, []);
 
   const closeTour = useCallback(() => {
-    setView('login');
+    setView(permissionSeen ? 'login' : 'permission');
     AsyncStorage.setItem(TOUR_SEEN_KEY, '1').catch(() => {});
-  }, []);
+  }, [permissionSeen]);
 
-  const confirmPermissionGuide = useCallback(() => {
-    setPermissionGuideSeen(true);
-    AsyncStorage.setItem(PERMISSION_GUIDE_SEEN_KEY, '1').catch(() => {});
+  const confirmPermissions = useCallback(() => {
+    setPermissionSeen(true);
+    setView('login');
+    AsyncStorage.setItem(PERMISSION_SEEN_KEY, '1').catch(() => {});
   }, []);
 
   return (
@@ -76,15 +72,13 @@ export default function App() {
       <View style={styles.stage}>
         <View style={styles.frame}>
           <LiquidBackground />
-          {fontsLoaded && view !== null && permissionGuideSeen !== null ? (
+          {fontsLoaded && view !== null ? (
             session ? (
-              permissionGuideSeen ? (
-                <PostLoginPlaceholder session={session} onSignOut={() => supabase.auth.signOut()} />
-              ) : (
-                <PermissionGuideScreen onConfirm={confirmPermissionGuide} />
-              )
+              <PostLoginPlaceholder session={session} onSignOut={() => supabase.auth.signOut()} />
             ) : view === 'tour' ? (
               <TourCarousel onClose={closeTour} />
+            ) : view === 'permission' ? (
+              <PermissionScreen onConfirm={confirmPermissions} />
             ) : (
               <LoginScreen onExplore={() => setView('tour')} />
             )
