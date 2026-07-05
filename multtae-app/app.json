@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "물때",
+    "slug": "multtae-app",
+    "version": "1.0.0",
+    "scheme": "multtae",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.multtae.app",
+      "usesAppleSignIn": true
+    },
+    "android": {
+      "package": "com.multtae.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": ["expo-font", "expo-web-browser", "expo-apple-authentication"]
+  }
+}
