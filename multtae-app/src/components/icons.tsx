@@ -104,6 +104,58 @@ export function ChevronDown({ size = 18, color = colors.info }: IconProps) {
   );
 }
 
+/** Camera (Permission_Request card). */
+export function CameraIcon({ size = 18, color = colors.brand }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path
+        d="M4 8.6 C4 7.5 4.9 6.6 6 6.6 H8.2 L9.7 4.6 H14.3 L15.8 6.6 H18 C19.1 6.6 20 7.5 20 8.6 V16.9 C20 18 19.1 18.9 18 18.9 H6 C4.9 18.9 4 18 4 16.9 Z"
+        stroke={color}
+        strokeWidth={2.2}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Circle cx={12} cy={12.4} r={3.1} stroke={color} strokeWidth={2.2} fill="none" />
+    </Svg>
+  );
+}
+
+/** Photo / picture frame (Permission_Request card). */
+export function PhotoIcon({ size = 18, color = colors.brand }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Rect x={4} y={5} width={16} height={14} rx={3} stroke={color} strokeWidth={2.2} fill="none" />
+      <Circle cx={9.2} cy={10} r={1.4} fill={color} />
+      <Path
+        d="M6.5 16.5 L11 12.5 L14 15 L16.5 12.8 L19 15"
+        stroke={color}
+        strokeWidth={2.2}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
+
+/** Location pin (Permission_Request card). */
+export function PinIcon({ size = 18, color = colors.brand }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path
+        d="M12 20.5 C12 20.5 5.5 15 5.5 10.2 C5.5 6.6 8.4 3.8 12 3.8 C15.6 3.8 18.5 6.6 18.5 10.2 C18.5 15 12 20.5 12 20.5 Z"
+        stroke={color}
+        strokeWidth={2.2}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Circle cx={12} cy={10.2} r={2.4} stroke={color} strokeWidth={2.2} fill="none" />
+    </Svg>
+  );
+}
+
 // ── Provider brand marks ──────────────────────────────────────────────
 
 export function KakaoLogo({ size = 18 }: { size?: number }) {
