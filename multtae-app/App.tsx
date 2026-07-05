@@ -7,6 +7,13 @@
  * the device; the tour auto-shows exactly once on first launch, and after
  * that it is reachable only via the secondary link on the login screen.
  * Completing OR skipping both count as "seen".
+ *
+ * 기기 권한 안내 (Permission_Request spec): shown once right after login,
+ * before the post-login flow. Pre-notice only — no OS prompts fire here.
+ * "확인" marks it seen on the device and it never auto-shows again; denied /
+ * blocked permissions are re-explained by each feature screen instead.
+ * (Per-account "new member" branching is a later work package; until then the
+ * device flag stands in for "first login".)
  */
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -20,12 +27,14 @@ import { colors, layout } from './src/theme/tokens';
 import { LiquidBackground } from './src/components/LiquidBackground';
 import { LoginScreen } from './src/screens/LoginScreen';
 import { TourCarousel } from './src/components/TourCarousel';
+import { PermissionGuideScreen } from './src/screens/PermissionGuideScreen';
 import { PostLoginPlaceholder } from './src/screens/PostLoginPlaceholder';
 import { supabase } from './src/lib/supabase';
 
 type Screen = 'login' | 'tour';
 
 const TOUR_SEEN_KEY = '@multtae/tour_seen';
+const PERMISSION_GUIDE_SEEN_KEY = '@multtae/permission_guide_seen';
 
 export default function App() {
   const [fontsLoaded] = useFonts(appFonts);
@@ -33,11 +42,16 @@ export default function App() {
   // the login screen before deciding whether the tour auto-shows.
   const [view, setView] = useState<Screen | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+  // null until the device flag is read (same pattern as the tour flag).
+  const [permissionGuideSeen, setPermissionGuideSeen] = useState<boolean | null>(null);
 
   useEffect(() => {
     AsyncStorage.getItem(TOUR_SEEN_KEY)
       .then((seen) => setView(seen === '1' ? 'login' : 'tour'))
       .catch(() => setView('login'));
+    AsyncStorage.getItem(PERMISSION_GUIDE_SEEN_KEY)
+      .then((seen) => setPermissionGuideSeen(seen === '1'))
+      .catch(() => setPermissionGuideSeen(true));
   }, []);
 
   useEffect(() => {
@@ -51,15 +65,24 @@ export default function App() {
     AsyncStorage.setItem(TOUR_SEEN_KEY, '1').catch(() => {});
   }, []);
 
+  const confirmPermissionGuide = useCallback(() => {
+    setPermissionGuideSeen(true);
+    AsyncStorage.setItem(PERMISSION_GUIDE_SEEN_KEY, '1').catch(() => {});
+  }, []);
+
   return (
     <SafeAreaProvider>
       <StatusBar style="dark" />
       <View style={styles.stage}>
         <View style={styles.frame}>
           <LiquidBackground />
-          {fontsLoaded && view !== null ? (
+          {fontsLoaded && view !== null && permissionGuideSeen !== null ? (
             session ? (
-              <PostLoginPlaceholder session={session} onSignOut={() => supabase.auth.signOut()} />
+              permissionGuideSeen ? (
+                <PostLoginPlaceholder session={session} onSignOut={() => supabase.auth.signOut()} />
+              ) : (
+                <PermissionGuideScreen onConfirm={confirmPermissionGuide} />
+              )
             ) : view === 'tour' ? (
               <TourCarousel onClose={closeTour} />
             ) : (
