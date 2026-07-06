@@ -1,53 +1,77 @@
 /**
  * Permission_Request — 기기 권한 안내 (사전 안내). First-run onboarding step
- * between the tour and login. Layout per the Notion spec's design handoff:
+ * between the tour and login. Ported 1:1 from the Claude Design handoff
+ * (기기권한 안내 screen):
  *
- *   1. 제목 + 안내문 + 보조문구
- *   2. 권한 카드 3개 (카메라 / 사진 / 위치) — identical layout, each with an
- *      icon, item name, one-line purpose, and an always-visible "선택" badge
- *      (no permission is required, so every card is optional)
- *   3. 데이터 처리 안내
- *   4. 단일 CTA `확인` + 보조 문구
+ *   1. 로고 타일(44px 글래스) + 2줄 제목 + 2줄 안내문
+ *   2. 권한 카드 3개 (카메라 / 사진 / 위치) — 아이콘 타일 + 항목명 + 목적 1줄
+ *      + `선택` 배지 (필수 권한 없음)
+ *   3. 데이터 처리 안내 — 실드 아이콘 + 한 문단 (소프트 글래스)
+ *   4. 하단 `확인` 버튼(48px) + 보조 문구
  *
+ * Sections enter with the handoff's staggered fade/slide (430ms, 120ms apart).
  * This screen is informational only — no consent UI, and it must never call
- * OS permission APIs. Actual permission prompts fire at feature use time
- * (camera → 인앱 촬영, photos → 사진첩 선택, location → 내 주변 항구 찾기).
+ * OS permission APIs. Actual permission prompts fire at feature use time.
  */
-import React from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, radii, shadows, spacing } from '../theme/tokens';
-import { type } from '../theme/typography';
+import { fontFamily, type } from '../theme/typography';
 import { GlassCard } from '../components/GlassCard';
-import { CameraIcon, PhotoIcon, PinIcon } from '../components/icons';
+import { WaveLogo } from '../components/WaveLogo';
+import { CameraIcon, PhotoIcon, PinIcon, ShieldCheckIcon } from '../components/icons';
 
 const PERMISSIONS = [
   {
     key: 'camera',
     Icon: CameraIcon,
     name: '카메라',
-    purpose: '인앱 조과 촬영, 인증용 기준자 촬영',
+    purpose: '조과 사진을 바로 찍어 기록할 때 사용해요',
   },
   {
     key: 'photo',
     Icon: PhotoIcon,
     name: '사진',
-    purpose: '직접 고른 조과 사진을 기록에 첨부',
+    purpose: '앨범 사진을 출조 기록에 붙일 때 사용해요',
   },
   {
     key: 'location',
     Icon: PinIcon,
     name: '위치',
-    purpose: '현재 항구 자동 입력, 위치 조건 해금',
+    purpose: '주변 포인트의 물때를 보여줄 때 사용해요',
   },
 ] as const;
 
-const DATA_NOTICES = [
-  '위치는 기능을 실행할 때 기기에서만 일시적으로 사용해요.',
-  '정밀 GPS 좌표는 서버에 저장하거나 공개하지 않아요.',
-  '사진은 시스템 선택기로 직접 고른 사진만 사용해요.',
-  '전화 권한은 요청하지 않아요.',
-];
+const DATA_NOTICE =
+  '수집한 정보는 물때·출조 기능 제공에만 사용하고, 기기 밖으로 보내거나 ' +
+  '다른 목적으로 쓰지 않아요. 권한별 안내는 앱 설정에서 다시 볼 수 있어요.';
+
+/** Handoff's `mt-enter` keyframes: fade in + 8px rise, staggered per section. */
+function EnterSection({ delay, children }: { delay: number; children: React.ReactNode }) {
+  const progress = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.timing(progress, {
+      toValue: 1,
+      duration: 430,
+      delay,
+      useNativeDriver: true,
+    }).start();
+  }, [progress, delay]);
+
+  return (
+    <Animated.View
+      style={{
+        opacity: progress,
+        transform: [
+          { translateY: progress.interpolate({ inputRange: [0, 1], outputRange: [8, 0] }) },
+        ],
+      }}
+    >
+      {children}
+    </Animated.View>
+  );
+}
 
 export function PermissionScreen({ onConfirm }: { onConfirm: () => void }) {
   const insets = useSafeAreaInsets();
@@ -56,52 +80,64 @@ export function PermissionScreen({ onConfirm }: { onConfirm: () => void }) {
     <View style={styles.root}>
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={[styles.content, { paddingTop: insets.top + 48 }]}
+        contentContainerStyle={[styles.content, { paddingTop: Math.max(insets.top + 16, 64) }]}
         showsVerticalScrollIndicator={false}
       >
-        {/* 1. Title + reassurance copy */}
-        <View style={styles.header}>
-          <Text style={styles.title}>기기 권한 안내</Text>
-          <Text style={styles.subtitle}>필요한 기능을 사용할 때만 권한을 요청해요.</Text>
-          <Text style={styles.helper}>허용하지 않아도 도감과 기본 기록은 이용할 수 있어요.</Text>
-        </View>
+        {/* 1. Logo tile + title + reassurance copy */}
+        <EnterSection delay={0}>
+          <View style={styles.header}>
+            <View style={styles.logoTile}>
+              <WaveLogo size={28} />
+            </View>
+            <Text style={styles.title}>물때 이용에 필요한{'\n'}권한을 알려드려요</Text>
+            <Text style={styles.subtitle}>
+              지금 허용하지 않아도 괜찮아요.{'\n'}각 기능을 처음 사용할 때만 요청해요.
+            </Text>
+          </View>
+        </EnterSection>
 
-        {/* 2. Permission cards — all optional, badge always visible */}
-        <View style={styles.cards}>
-          {PERMISSIONS.map(({ key, Icon, name, purpose }) => (
-            <GlassCard key={key} radius={20} padding={0} style={styles.card}>
-              <View
-                style={styles.cardInner}
-                accessible
-                accessibilityLabel={`${name} 권한, 선택 사항. ${purpose}`}
-              >
-                <View style={styles.cardIcon}>
-                  <Icon size={20} />
+        {/* 2. Permission cards — all optional, `선택` badge on each */}
+        <EnterSection delay={120}>
+          <View style={styles.cards}>
+            {PERMISSIONS.map(({ key, Icon, name, purpose }) => (
+              <GlassCard key={key} radius={radii.xl} padding={0}>
+                <View
+                  style={styles.cardInner}
+                  accessible
+                  accessibilityLabel={`${name} 권한, 선택 사항. ${purpose}`}
+                >
+                  <View style={styles.cardIcon}>
+                    <Icon size={22} />
+                  </View>
+                  <View style={styles.cardText}>
+                    <Text style={styles.cardName}>{name}</Text>
+                    {/* 디자인의 word-break: keep-all — 한글 어절 단위 줄바꿈 (iOS) */}
+                    <Text style={styles.cardPurpose} lineBreakStrategyIOS="hangul-word">
+                      {purpose}
+                    </Text>
+                  </View>
+                  <View style={styles.optionalBadge}>
+                    <Text style={styles.optionalBadgeText}>선택</Text>
+                  </View>
                 </View>
-                <View style={styles.cardText}>
-                  <Text style={styles.cardName}>{name}</Text>
-                  <Text style={styles.cardPurpose}>{purpose}</Text>
-                </View>
-                <View style={styles.optionalBadge}>
-                  <Text style={styles.optionalBadgeText}>선택</Text>
-                </View>
-              </View>
-            </GlassCard>
-          ))}
-        </View>
-
-        {/* 3. Data handling notice */}
-        <GlassCard variant="soft" radius={20} padding={18} withShadow={false}>
-          <Text style={styles.noticeTitle}>데이터 처리 안내</Text>
-          <View style={styles.noticeList}>
-            {DATA_NOTICES.map((line) => (
-              <View key={line} style={styles.noticeRow}>
-                <View style={styles.noticeDot} />
-                <Text style={styles.noticeText}>{line}</Text>
-              </View>
+              </GlassCard>
             ))}
           </View>
-        </GlassCard>
+        </EnterSection>
+
+        {/* 3. Data handling notice — one paragraph, shield mark */}
+        <EnterSection delay={240}>
+          <GlassCard variant="soft" radius={radii.lg} padding={0} withShadow={false}>
+            <View style={styles.noticeInner}>
+              <View style={styles.noticeIcon}>
+                <ShieldCheckIcon size={16} />
+              </View>
+              <Text style={styles.noticeText} lineBreakStrategyIOS="hangul-word">
+                {DATA_NOTICE}
+              </Text>
+            </View>
+          </GlassCard>
+        </EnterSection>
       </ScrollView>
 
       {/* 4. Single confirm CTA — does NOT trigger any OS permission prompt */}
@@ -116,7 +152,9 @@ export function PermissionScreen({ onConfirm }: { onConfirm: () => void }) {
         >
           <Text style={styles.confirmLabel}>확인</Text>
         </Pressable>
-        <Text style={styles.footerHint}>권한은 필요할 때 다시 요청할 수 있어요.</Text>
+        <Text style={styles.footerHint} lineBreakStrategyIOS="hangul-word">
+          권한은 기기 설정에서 언제든지 바꿀 수 있어요
+        </Text>
       </View>
     </View>
   );
@@ -128,60 +166,68 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: spacing.marginMobile,
     paddingBottom: spacing.stackLg,
+    gap: 28,
   },
-  header: { gap: 8, marginBottom: spacing.stackLg },
-  title: { ...type.headlineMd, color: colors.ink },
-  subtitle: { ...type.bodyLg, color: colors.body },
-  helper: { ...type.labelMd, color: colors.muted },
-  cards: { gap: 10, marginBottom: spacing.stackMd },
-  card: { width: '100%' },
+  header: { gap: 14 },
+  logoTile: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    backgroundColor: colors.glassSoft,
+    borderWidth: 1,
+    borderColor: colors.hairlineStrong,
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...shadows.glass,
+  },
+  title: { ...type.headlineLg, color: colors.ink },
+  subtitle: { ...type.bodyMd, color: colors.body, lineHeight: 21 },
+  cards: { gap: spacing.gutter },
   cardInner: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 13,
+    gap: 14,
     paddingHorizontal: 16,
-    paddingVertical: 15,
+    paddingVertical: 18,
   },
   cardIcon: {
-    width: 42,
-    height: 42,
+    width: 44,
+    height: 44,
     borderRadius: 14,
     backgroundColor: colors.brandTint,
     alignItems: 'center',
     justifyContent: 'center',
   },
   cardText: { flex: 1, gap: 2 },
-  cardName: { fontFamily: 'NotoSansKR_700Bold', fontSize: 15, color: colors.ink },
-  cardPurpose: { fontFamily: 'NotoSansKR_400Regular', fontSize: 12.5, color: colors.muted },
+  cardName: { ...type.labelLg, fontFamily: fontFamily.bold, color: colors.ink },
+  cardPurpose: { ...type.labelMd, color: colors.muted },
   optionalBadge: {
-    backgroundColor: 'rgba(255,255,255,.4)',
+    backgroundColor: 'rgba(255,255,255,0.4)',
     borderWidth: 1,
     borderColor: colors.hairline,
-    borderRadius: 11,
+    borderRadius: radii.pill,
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 4,
   },
-  optionalBadgeText: { fontFamily: 'NotoSansKR_500Medium', fontSize: 11.5, color: colors.muted },
-  noticeTitle: { ...type.labelLg, color: colors.ink, marginBottom: 10 },
-  noticeList: { gap: 7 },
-  noticeRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 8 },
-  noticeDot: {
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: colors.muted,
-    marginTop: 7,
+  optionalBadgeText: { fontFamily: fontFamily.medium, fontSize: 11.5, color: colors.muted },
+  noticeInner: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
   },
-  noticeText: { ...type.labelMd, color: colors.body, flex: 1, lineHeight: 18 },
+  noticeIcon: { marginTop: 1 },
+  noticeText: { ...type.labelMd, color: colors.body, lineHeight: 18, flex: 1 },
   footer: {
     alignItems: 'center',
     gap: 12,
     paddingHorizontal: spacing.marginMobile,
-    paddingTop: 8,
+    paddingTop: 16,
   },
   confirmBtn: {
     width: '100%',
-    height: 52,
+    height: 48,
     borderRadius: radii.lg,
     backgroundColor: colors.brand,
     alignItems: 'center',
