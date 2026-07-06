@@ -104,6 +104,91 @@ export function ChevronDown({ size = 18, color = colors.info }: IconProps) {
   );
 }
 
+/** Camera (Permission_Request card). Geometry from the design handoff. */
+export function CameraIcon({ size = 22, color = colors.brand }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path
+        d="M3.5 8.5 A 2 2 0 0 1 5.5 6.5 H 8 L 9.6 4.4 A 1.6 1.6 0 0 1 10.9 3.8 H 13.1 A 1.6 1.6 0 0 1 14.4 4.4 L 16 6.5 H 18.5 A 2 2 0 0 1 20.5 8.5 V 17.5 A 2 2 0 0 1 18.5 19.5 H 5.5 A 2 2 0 0 1 3.5 17.5 Z"
+        stroke={color}
+        strokeWidth={2.5}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Circle cx={12} cy={12.8} r={3.4} stroke={color} strokeWidth={2.5} fill="none" />
+    </Svg>
+  );
+}
+
+/** Photo / picture frame (Permission_Request card). Geometry from the design handoff. */
+export function PhotoIcon({ size = 22, color = colors.brand }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Rect
+        x={3.5}
+        y={3.5}
+        width={17}
+        height={17}
+        rx={3}
+        stroke={color}
+        strokeWidth={2.5}
+        fill="none"
+      />
+      <Circle cx={9} cy={9} r={1.4} fill={color} />
+      <Path
+        d="M4.5 17 L 9.5 12 L 13 15.5 L 15.5 13 L 19.5 17"
+        stroke={color}
+        strokeWidth={2.5}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
+
+/** Location pin (Permission_Request card). Geometry from the design handoff. */
+export function PinIcon({ size = 22, color = colors.brand }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path
+        d="M12 21 C 12 21 5 15.4 5 10 A 7 7 0 0 1 19 10 C 19 15.4 12 21 12 21 Z"
+        stroke={color}
+        strokeWidth={2.5}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Circle cx={12} cy={10} r={2.6} stroke={color} strokeWidth={2.5} fill="none" />
+    </Svg>
+  );
+}
+
+/** Shield-check (Permission_Request data notice). Geometry from the design handoff. */
+export function ShieldCheckIcon({ size = 16, color = colors.info }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path
+        d="M12 3 L 19.5 6.2 V 11 C 19.5 16 16.4 19.6 12 21 C 7.6 19.6 4.5 16 4.5 11 V 6.2 Z"
+        stroke={color}
+        strokeWidth={2.5}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Path
+        d="M9 11.8 L 11.2 14 L 15.2 9.8"
+        stroke={color}
+        strokeWidth={2.5}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
+
 // ── Provider brand marks ──────────────────────────────────────────────
 
 export function KakaoLogo({ size = 18 }: { size?: number }) {

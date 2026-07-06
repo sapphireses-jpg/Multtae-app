@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/design-system-00fa8ec3-4b53-4466-b99c-e33b8a4b7c81/tokens/fonts.css">
+  <link rel="stylesheet" href="_ds/design-system-00fa8ec3-4b53-4466-b99c-e33b8a4b7c81/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/design-system-00fa8ec3-4b53-4466-b99c-e33b8a4b7c81/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/design-system-00fa8ec3-4b53-4466-b99c-e33b8a4b7c81/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/design-system-00fa8ec3-4b53-4466-b99c-e33b8a4b7c81/tokens/effects.css">
+  <link rel="stylesheet" href="_ds/design-system-00fa8ec3-4b53-4466-b99c-e33b8a4b7c81/styles.css">
+  <script src="_ds/design-system-00fa8ec3-4b53-4466-b99c-e33b8a4b7c81/_ds_bundle.js"></script>
+  <style>
+    body { margin: 0; background: var(--mt-bg); }
+    @keyframes mt-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  </style>
+</helmet>
+
+<div data-screen-label="기기권한 안내" style="position: relative; width: 390px; height: 844px; margin: 0 auto; overflow: hidden; background: var(--mt-bg); font-family: var(--mt-font-body); display: flex; flex-direction: column;">
+
+  <!-- 리퀴드 블롭 배경 -->
+  <span style="position: absolute; top: -15%; left: -20%; width: 70%; height: 45%; background: radial-gradient(circle, var(--mt-blob-white) 0%, transparent 70%); filter: blur(24px); animation: mt-morph 16s ease-in-out infinite alternate; animation-play-state: {{ blobPlay }}; pointer-events: none;"></span>
+  <span style="position: absolute; top: 38%; right: -25%; width: 80%; height: 50%; background: radial-gradient(circle, var(--mt-blob-pink) 0%, transparent 70%); filter: blur(24px); animation: mt-morph 20s ease-in-out infinite alternate; animation-play-state: {{ blobPlay }}; pointer-events: none;"></span>
+  <span style="position: absolute; bottom: -12%; left: 0%; width: 65%; height: 42%; background: radial-gradient(circle, var(--mt-blob-blue) 0%, transparent 70%); filter: blur(24px); animation: mt-morph 18s ease-in-out infinite alternate; animation-play-state: {{ blobPlay }}; pointer-events: none;"></span>
+
+  <!-- 콘텐츠 -->
+  <div style="position: relative; flex: 1; overflow: auto; padding: 64px 20px 0; display: flex; flex-direction: column; gap: 28px;">
+
+    <!-- 제목 + 안내문 -->
+    <div style="display: flex; flex-direction: column; gap: 14px; animation: mt-enter 430ms var(--mt-ease) both;">
+      <span style="width: 44px; height: 44px; border-radius: 14px; background: var(--mt-glass-soft); backdrop-filter: var(--mt-blur-md); -webkit-backdrop-filter: var(--mt-blur-md); border: 1px solid var(--mt-hairline-strong); box-shadow: var(--mt-shadow-glass); display: flex; align-items: center; justify-content: center;"><img src="assets/logo-wave.svg" width="28" height="28" alt="물때 로고"></span>
+      <span style="font: var(--mt-headline-lg); color: var(--mt-ink); text-wrap: pretty;">물때 이용에 필요한<br>권한을 알려드려요</span>
+      <span style="font: var(--mt-body-md); color: var(--mt-body); line-height: 21px; text-wrap: pretty;">지금 허용하지 않아도 괜찮아요.<br>각 기능을 처음 사용할 때만 요청해요.</span>
+    </div>
+
+    <!-- 권한 카드 3개 -->
+    <div style="display: flex; flex-direction: column; gap: 12px; animation: mt-enter 430ms var(--mt-ease) 120ms both;" data-comment-anchor="a5ded684a8-div">
+
+      <div style="display: flex; align-items: center; gap: 14px; background: var(--mt-glass); backdrop-filter: var(--mt-blur-md); -webkit-backdrop-filter: var(--mt-blur-md); border: 1px solid var(--mt-hairline); border-radius: var(--mt-radius-xl); padding: 18px 16px; box-shadow: var(--mt-shadow-glass);">
+        <span aria-hidden="true" style="flex: none; width: 44px; height: 44px; border-radius: 14px; background: var(--mt-brand-tint); color: var(--mt-brand); display: flex; align-items: center; justify-content: center;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 A 2 2 0 0 1 5.5 6.5 H 8 L 9.6 4.4 A 1.6 1.6 0 0 1 10.9 3.8 H 13.1 A 1.6 1.6 0 0 1 14.4 4.4 L 16 6.5 H 18.5 A 2 2 0 0 1 20.5 8.5 V 17.5 A 2 2 0 0 1 18.5 19.5 H 5.5 A 2 2 0 0 1 3.5 17.5 Z"></path><circle cx="12" cy="12.8" r="3.4"></circle></svg>
+        </span>
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 2px;">
+          <span style="font: var(--mt-label-lg); font-weight: 700; color: var(--mt-ink);">카메라</span>
+          <span style="font: var(--mt-label-md); color: var(--mt-muted); word-break: keep-all;">조과 사진을 바로 찍어 기록할 때 사용해요</span>
+        </div>
+        <sc-if value="{{ showBadge }}" hint-placeholder-val="{{ true }}">
+          <span style="flex: none; font-size: 11.5px; font-weight: 500; color: var(--mt-muted); background: rgba(255,255,255,0.4); border: 1px solid var(--mt-hairline); border-radius: var(--mt-radius-pill); padding: 4px 10px;">선택</span>
+        </sc-if>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 14px; background: var(--mt-glass); backdrop-filter: var(--mt-blur-md); -webkit-backdrop-filter: var(--mt-blur-md); border: 1px solid var(--mt-hairline); border-radius: var(--mt-radius-xl); padding: 18px 16px; box-shadow: var(--mt-shadow-glass);">
+        <span aria-hidden="true" style="flex: none; width: 44px; height: 44px; border-radius: 14px; background: var(--mt-brand-tint); color: var(--mt-brand); display: flex; align-items: center; justify-content: center;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3"></rect><circle cx="9" cy="9" r="1.4" fill="currentColor" stroke="none"></circle><path d="M4.5 17 L 9.5 12 L 13 15.5 L 15.5 13 L 19.5 17"></path></svg>
+        </span>
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 2px;">
+          <span style="font: var(--mt-label-lg); font-weight: 700; color: var(--mt-ink);">사진</span>
+          <span style="font: var(--mt-label-md); color: var(--mt-muted); word-break: keep-all;">앨범 사진을 출조 기록에 붙일 때 사용해요</span>
+        </div>
+        <sc-if value="{{ showBadge }}" hint-placeholder-val="{{ true }}">
+          <span style="flex: none; font-size: 11.5px; font-weight: 500; color: var(--mt-muted); background: rgba(255,255,255,0.4); border: 1px solid var(--mt-hairline); border-radius: var(--mt-radius-pill); padding: 4px 10px;">선택</span>
+        </sc-if>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 14px; background: var(--mt-glass); backdrop-filter: var(--mt-blur-md); -webkit-backdrop-filter: var(--mt-blur-md); border: 1px solid var(--mt-hairline); border-radius: var(--mt-radius-xl); padding: 18px 16px; box-shadow: var(--mt-shadow-glass);">
+        <span aria-hidden="true" style="flex: none; width: 44px; height: 44px; border-radius: 14px; background: var(--mt-brand-tint); color: var(--mt-brand); display: flex; align-items: center; justify-content: center;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21 C 12 21 5 15.4 5 10 A 7 7 0 0 1 19 10 C 19 15.4 12 21 12 21 Z"></path><circle cx="12" cy="10" r="2.6"></circle></svg>
+        </span>
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 2px;">
+          <span style="font: var(--mt-label-lg); font-weight: 700; color: var(--mt-ink);">위치</span>
+          <span style="font: var(--mt-label-md); color: var(--mt-muted); word-break: keep-all;">주변 포인트의 물때를 보여줄 때 사용해요</span>
+        </div>
+        <sc-if value="{{ showBadge }}" hint-placeholder-val="{{ true }}">
+          <span style="flex: none; font-size: 11.5px; font-weight: 500; color: var(--mt-muted); background: rgba(255,255,255,0.4); border: 1px solid var(--mt-hairline); border-radius: var(--mt-radius-pill); padding: 4px 10px;">선택</span>
+        </sc-if>
+      </div>
+
+    </div>
+
+    <!-- 데이터 처리 안내 -->
+    <div style="display: flex; align-items: flex-start; gap: 10px; background: var(--mt-glass-soft); backdrop-filter: var(--mt-blur-sm); -webkit-backdrop-filter: var(--mt-blur-sm); border: 1px solid var(--mt-hairline-soft); border-radius: var(--mt-radius-lg); padding: 14px 16px; animation: mt-enter 430ms var(--mt-ease) 240ms both;">
+      <span aria-hidden="true" style="flex: none; color: var(--mt-info); margin-top: 1px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L 19.5 6.2 V 11 C 19.5 16 16.4 19.6 12 21 C 7.6 19.6 4.5 16 4.5 11 V 6.2 Z"></path><path d="M9 11.8 L 11.2 14 L 15.2 9.8"></path></svg>
+      </span>
+      <span style="font: var(--mt-label-md); color: var(--mt-body); line-height: 18px; text-wrap: pretty;">수집한 정보는 물때·출조 기능 제공에만 사용하고, 기기 밖으로 보내거나 다른 목적으로 쓰지 않아요. 권한별 안내는 앱 설정에서 다시 볼 수 있어요.</span>
+    </div>
+
+  </div>
+
+  <!-- 하단 버튼 + 보조문구 -->
+  <div style="position: relative; flex: none; padding: 16px 20px 34px; display: flex; flex-direction: column; gap: 12px; align-items: center;" data-comment-anchor="5ff26cb2b7-div">
+    <x-import component-from-global-scope="DesignSystem_00fa8e.Button" on-click="{{ onConfirm }}" hint-size="100%,48px">확인</x-import>
+    <span style="font: var(--mt-label-md); color: var(--mt-muted); word-break: keep-all;">권한은 기기 설정에서 언제든지 바꿀 수 있어요</span>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;showBadge&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;권한 카드&quot;,&quot;description&quot;:&quot;'선택' 배지 표시&quot;},&quot;blobMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;배경&quot;,&quot;description&quot;:&quot;리퀴드 블롭 모션&quot;}}">
+class Component extends DCLogic {
+  state = { confirmed: false };
+  renderVals() {
+    return {
+      showBadge: this.props.showBadge ?? true,
+      blobPlay: (this.props.blobMotion ?? true) ? 'running' : 'paused',
+      onConfirm: () => this.setState({ confirmed: true }),
+    };
+  }
+}
+</script>
+
+</body></html>
