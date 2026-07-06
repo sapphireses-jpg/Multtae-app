@@ -21,7 +21,8 @@ import { LiquidBackground } from './src/components/LiquidBackground';
 import { LoginScreen } from './src/screens/LoginScreen';
 import { TourCarousel } from './src/components/TourCarousel';
 import { PostLoginPlaceholder } from './src/screens/PostLoginPlaceholder';
-import { supabase } from './src/lib/supabase';
+import { ConfigNotice } from './src/components/ConfigNotice';
+import { supabase, isSupabaseConfigured } from './src/lib/supabase';
 
 type Screen = 'login' | 'tour';
 
@@ -41,6 +42,9 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    // Without Supabase config there is no client — auth runs mocked (auth.ts)
+    // and no session can exist, so there is nothing to subscribe to.
+    if (!supabase) return;
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
     const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => setSession(s));
     return () => sub.subscription.unsubscribe();
@@ -59,13 +63,14 @@ export default function App() {
           <LiquidBackground />
           {fontsLoaded && view !== null ? (
             session ? (
-              <PostLoginPlaceholder session={session} onSignOut={() => supabase.auth.signOut()} />
+              <PostLoginPlaceholder session={session} onSignOut={() => supabase?.auth.signOut()} />
             ) : view === 'tour' ? (
               <TourCarousel onClose={closeTour} />
             ) : (
               <LoginScreen onExplore={() => setView('tour')} />
             )
           ) : null}
+          {__DEV__ && !isSupabaseConfigured ? <ConfigNotice /> : null}
         </View>
       </View>
     </SafeAreaProvider>

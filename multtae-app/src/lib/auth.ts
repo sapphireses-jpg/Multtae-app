@@ -17,8 +17,8 @@ import { Platform } from 'react-native';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import * as WebBrowser from 'expo-web-browser';
 import { makeRedirectUri } from 'expo-auth-session';
-import type { Provider } from '@supabase/supabase-js';
-import { supabase, isSupabaseConfigured } from './supabase';
+import type { Provider, SupabaseClient } from '@supabase/supabase-js';
+import { supabase } from './supabase';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -45,7 +45,10 @@ function looksLikeNetworkError(err: unknown): boolean {
  * The provider has already authenticated the user by the time we get here, so
  * errors in this step are "서버 계정 처리 실패" → `account` (not `failed`).
  */
-async function completeSessionFromUrl(url: string): Promise<AuthResult> {
+async function completeSessionFromUrl(
+  client: SupabaseClient,
+  url: string,
+): Promise<AuthResult> {
   // Supabase returns tokens in the URL fragment (#access_token=...&refresh_token=...);
   // PKCE returns a ?code= query param. Handle both.
   const fragment = url.includes('#') ? url.split('#')[1] : '';
@@ -54,7 +57,7 @@ async function completeSessionFromUrl(url: string): Promise<AuthResult> {
   const refresh_token = params.get('refresh_token');
 
   if (access_token && refresh_token) {
-    const { error } = await supabase.auth.setSession({ access_token, refresh_token });
+    const { error } = await client.auth.setSession({ access_token, refresh_token });
     return error
       ? { ok: false, reason: looksLikeNetworkError(error) ? 'network' : 'account' }
       : { ok: true };
@@ -62,7 +65,7 @@ async function completeSessionFromUrl(url: string): Promise<AuthResult> {
 
   const code = new URL(url).searchParams.get('code');
   if (code) {
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const { error } = await client.auth.exchangeCodeForSession(code);
     return error
       ? { ok: false, reason: looksLikeNetworkError(error) ? 'network' : 'account' }
       : { ok: true };
@@ -73,9 +76,12 @@ async function completeSessionFromUrl(url: string): Promise<AuthResult> {
 }
 
 /** Kakao / Google / (non-iOS) Apple via the Supabase OAuth web flow. */
-async function signInWithOAuth(provider: Provider): Promise<AuthResult> {
+async function signInWithOAuth(
+  client: SupabaseClient,
+  provider: Provider,
+): Promise<AuthResult> {
   try {
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await client.auth.signInWithOAuth({
       provider,
       options: { redirectTo, skipBrowserRedirect: true },
     });
@@ -90,15 +96,15 @@ async function signInWithOAuth(provider: Provider): Promise<AuthResult> {
     if (result.type !== 'success' || !result.url) {
       return { ok: false, reason: 'failed' };
     }
-    return await completeSessionFromUrl(result.url);
+    return await completeSessionFromUrl(client, result.url);
   } catch (err) {
     return { ok: false, reason: looksLikeNetworkError(err) ? 'network' : 'failed' };
   }
 }
 
 /** Native Sign in with Apple (iOS), exchanged for a Supabase session. */
-async function signInWithApple(): Promise<AuthResult> {
-  if (Platform.OS !== 'ios') return signInWithOAuth('apple');
+async function signInWithApple(client: SupabaseClient): Promise<AuthResult> {
+  if (Platform.OS !== 'ios') return signInWithOAuth(client, 'apple');
   try {
     const credential = await AppleAuthentication.signInAsync({
       requestedScopes: [
@@ -110,7 +116,7 @@ async function signInWithApple(): Promise<AuthResult> {
 
     // Apple has vouched for the user; a failure here is server-side account
     // processing → `account`.
-    const { error } = await supabase.auth.signInWithIdToken({
+    const { error } = await client.auth.signInWithIdToken({
       provider: 'apple',
       token: credential.identityToken,
     });
@@ -135,12 +141,14 @@ export async function signIn(
   provider: SocialProvider,
   mockOutcome?: AuthFailure | 'success',
 ): Promise<AuthResult> {
-  if (!isSupabaseConfigured) {
+  if (!supabase) {
     await new Promise((r) => setTimeout(r, 1600));
     if (!mockOutcome || mockOutcome === 'success') return { ok: true };
     return { ok: false, reason: mockOutcome };
   }
-  return provider === 'apple' ? signInWithApple() : signInWithOAuth(provider);
+  return provider === 'apple'
+    ? signInWithApple(supabase)
+    : signInWithOAuth(supabase, provider);
 }
 
 export function messageForFailure(reason: AuthFailure): string {

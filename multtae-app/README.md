@@ -50,7 +50,28 @@ npx expo start            # press i (iOS) / a (Android)
 **Without a `.env`** the app runs in **mock mode**: sign-in resolves after a
 1.6s delay so you can exercise the loading and error states. Set
 `EXPO_PUBLIC_MOCK_OUTCOME=success|cancelled|network|failed` to pick the mocked
-result (default `network`).
+result (default `network`). In dev builds a notice banner on the login screen
+points at the missing config.
+
+### Environment variables
+
+Copy `.env.example` to `.env`. Only `EXPO_PUBLIC_*`-prefixed vars are exposed
+to the app bundle (Expo rule); they are inlined **at bundle time**, so after
+editing `.env` restart with a cleared cache: `npx expo start -c`.
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `EXPO_PUBLIC_SUPABASE_URL` | for real auth | Supabase project URL (`https://<project>.supabase.co`) |
+| `EXPO_PUBLIC_SUPABASE_ANON_KEY` | for real auth | Supabase anon (public) key — safe in the client, data is guarded by RLS |
+| `EXPO_PUBLIC_MOCK_OUTCOME` | no | Mock-mode sign-in outcome: `success` / `cancelled` / `network` / `failed` |
+
+### Troubleshooting
+
+- **`[runtime not ready]: Error: supabaseUrl is required.`** — the env vars
+  weren't picked up. Make sure `.env` exists next to `package.json`, the names
+  start with `EXPO_PUBLIC_`, and restart Metro with `npx expo start -c`.
+  (Since the null-client fallback the app no longer crashes on missing config —
+  if you still see this, you're running an old bundle; clear the cache.)
 
 ## Supabase setup
 
