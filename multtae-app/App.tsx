@@ -9,7 +9,7 @@
  * Completing OR skipping both count as "seen".
  */
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
@@ -20,7 +20,7 @@ import { colors, layout } from './src/theme/tokens';
 import { LiquidBackground } from './src/components/LiquidBackground';
 import { LoginScreen } from './src/screens/LoginScreen';
 import { TourCarousel } from './src/components/TourCarousel';
-import { PostLoginPlaceholder } from './src/screens/PostLoginPlaceholder';
+import { FishSpeciesListScreen } from './src/screens/FishSpeciesListScreen';
 import { supabase } from './src/lib/supabase';
 
 type Screen = 'login' | 'tour';
@@ -51,6 +51,16 @@ export default function App() {
     AsyncStorage.setItem(TOUR_SEEN_KEY, '1').catch(() => {});
   }, []);
 
+  // 프로필 화면이 생기기 전까지의 임시 로그아웃 경로 — GNB 프로필 탭에서 확인
+  // 후 signOut. 나머지 미구현 탭은 no-op.
+  const handleTabPress = useCallback((tab: string) => {
+    if (tab !== 'profile') return;
+    Alert.alert('로그아웃', '로그아웃하시겠어요?', [
+      { text: '취소', style: 'cancel' },
+      { text: '로그아웃', style: 'destructive', onPress: () => supabase.auth.signOut() },
+    ]);
+  }, []);
+
   return (
     <SafeAreaProvider>
       <StatusBar style="dark" />
@@ -59,7 +69,7 @@ export default function App() {
           <LiquidBackground />
           {fontsLoaded && view !== null ? (
             session ? (
-              <PostLoginPlaceholder session={session} onSignOut={() => supabase.auth.signOut()} />
+              <FishSpeciesListScreen onPressTab={handleTabPress} />
             ) : view === 'tour' ? (
               <TourCarousel onClose={closeTour} />
             ) : (
